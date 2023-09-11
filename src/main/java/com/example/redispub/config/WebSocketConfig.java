@@ -1,21 +1,27 @@
 package com.example.redispub.config;
 
-import com.example.redispub.handler.StompHandler;
+import com.example.redispub.handler.SocketAuthenticationInterceptor;
+import com.example.redispub.handler.StompAuthenticationInterceptor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.server.HandshakeInterceptor;
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final StompHandler stompHandler;
+    @Bean
+    ChannelInterceptor stompAuthenticationInterceptor() {return new StompAuthenticationInterceptor(); }
 
-    public WebSocketConfig(StompHandler stompHandler) {
-        this.stompHandler = stompHandler;
+    @Bean
+    HandshakeInterceptor socketAuthenticationInterceptor() {
+        return new SocketAuthenticationInterceptor();
     }
 
     @Override
@@ -27,12 +33,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/chat-server")
+                .addInterceptors(socketAuthenticationInterceptor())
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
     }
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(stompHandler);
+        registration.interceptors(stompAuthenticationInterceptor());
     }
 }

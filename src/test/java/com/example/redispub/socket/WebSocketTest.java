@@ -1,8 +1,8 @@
 package com.example.redispub.socket;
 
+import com.example.redispub.request.RequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
@@ -45,13 +45,15 @@ public class WebSocketTest {
     @Test
     public void sendMessage() throws ExecutionException, InterruptedException, TimeoutException {
         WebSocketHttpHeaders httpHeaders = new WebSocketHttpHeaders();
-        httpHeaders.add(HttpHeaders.AUTHORIZATION, "test");
         StompHeaders stompHeaders = new StompHeaders();
-        stompHeaders.add("jwt", "hello");
-        StompSession stompSession = stompClient.connectAsync(TARGET_URI, httpHeaders, stompHeaders, new StompSessionHandlerAdapter() {
-        }).get(1, TimeUnit.SECONDS);
+        StompSession stompSession = stompClient.connectAsync(TARGET_URI + "/?authentication=hello", httpHeaders, stompHeaders, new StompSessionHandlerAdapter() {
+        }).get(1000, TimeUnit.SECONDS);
 
+
+        RequestDto requestDto = new RequestDto();
+        requestDto.setToken("token");
+        requestDto.setData("test");
         // Send
-        StompSession.Receiptable test = stompSession.send(SENDMESSAGE_URI, "test");
+        StompSession.Receiptable test = stompSession.send("/app/chat/join", requestDto);
     }
 }
