@@ -21,7 +21,7 @@ public class StompAuthenticationInterceptor implements ChannelInterceptor {
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         logger.info("command = {}", accessor.getCommand());
-        if (accessor.getCommand() == StompCommand.CONNECT || accessor.getCommand() == StompCommand.DISCONNECT) {
+        if (accessor.getCommand() == StompCommand.CONNECT || accessor.getCommand() == StompCommand.DISCONNECT || accessor.getCommand() == StompCommand.SUBSCRIBE || accessor.getCommand() == StompCommand.SEND) {
             return message;
         }
 

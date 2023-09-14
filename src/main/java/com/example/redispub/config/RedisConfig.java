@@ -1,9 +1,7 @@
 package com.example.redispub.config;
 
-import com.example.redispub.model.RoomEventListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -21,11 +19,6 @@ public class RedisConfig {
         container.setConnectionFactory(connectionFactory);
 
         return container;
-    }
-
-    @Bean
-    MessageListener messageListener() {
-        return new RoomEventListener();
     }
 
     @Bean

@@ -43,6 +43,6 @@ public class ChatService {
         messageDto.setSenderId(senderId);
         messageDto.setMessage(message);
 
-        redisTemplate.convertAndSend("/room/" + roomId, messageDto);
+        redisTemplate.convertAndSend("/topic/room/" + roomId, messageDto);
     }
 }
