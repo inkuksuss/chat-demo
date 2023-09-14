@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface RedisJpaRepository extends CrudRepository<RoomInfoDto, Long> {
+public interface ChatRepository extends CrudRepository<RoomInfoDto, Long>, ChatRedisRepository {
 
     List<RoomInfoDto> findByMemberId(Long id);
 }

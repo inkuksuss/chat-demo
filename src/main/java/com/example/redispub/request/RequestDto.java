@@ -5,14 +5,15 @@ import java.io.Serializable;
 public class RequestDto implements Serializable {
 
     private String token;
+    private Long roomId;
     private String data;
 
-    @Override
-    public String toString() {
-        return "RequestDto{" +
-                "token='" + token + '\'' +
-                ", data='" + data + '\'' +
-                '}';
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
     }
 
     public String getToken() {
@@ -29,5 +30,14 @@ public class RequestDto implements Serializable {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return "RequestDto{" +
+                "token='" + token + '\'' +
+                ", roomId=" + roomId +
+                ", data='" + data + '\'' +
+                '}';
     }
 }

@@ -1,12 +1,19 @@
 package com.example.redispub.repository.dto;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class RoomDto {
 
+    private Long id;
     private Long roomId;
-    private List<String> memberList = new ArrayList<>();
+    private Long memberId;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getRoomId() {
         return roomId;
@@ -16,11 +23,11 @@ public class RoomDto {
         this.roomId = roomId;
     }
 
-    public List<String> getMemberList() {
-        return memberList;
+    public Long getMemberId() {
+        return memberId;
     }
 
-    public void setMemberList(List<String> memberList) {
-        this.memberList = memberList;
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
     }
 }

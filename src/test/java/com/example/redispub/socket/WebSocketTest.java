@@ -46,14 +46,25 @@ public class WebSocketTest {
     public void sendMessage() throws ExecutionException, InterruptedException, TimeoutException {
         WebSocketHttpHeaders httpHeaders = new WebSocketHttpHeaders();
         StompHeaders stompHeaders = new StompHeaders();
-        StompSession stompSession = stompClient.connectAsync(TARGET_URI + "/?authentication=hello", httpHeaders, stompHeaders, new StompSessionHandlerAdapter() {
+        StompSession stompSession1 = stompClient.connectAsync(TARGET_URI + "/?authentication=hello", httpHeaders, stompHeaders, new StompSessionHandlerAdapter() {
         }).get(1000, TimeUnit.SECONDS);
 
 
-        RequestDto requestDto = new RequestDto();
-        requestDto.setToken("token");
-        requestDto.setData("test");
+        RequestDto requestDto1 = new RequestDto();
+        requestDto1.setToken("1");
+        requestDto1.setData("test");
         // Send
-        StompSession.Receiptable test = stompSession.send("/app/chat/join", requestDto);
+        StompSession.Receiptable test1 = stompSession1.send("/app/chat/join", requestDto1);
+
+        StompSession stompSession2 = stompClient.connectAsync(TARGET_URI + "/?authentication=hello", httpHeaders, stompHeaders, new StompSessionHandlerAdapter() {
+        }).get(1000, TimeUnit.SECONDS);
+
+        Thread.sleep(1000);
+
+        RequestDto requestDto2 = new RequestDto();
+        requestDto2.setToken("2");
+        requestDto2.setRoomId(1L);
+        requestDto2.setData("test");
+        StompSession.Receiptable test2 = stompSession2.send("/app/chat/message", requestDto2);
     }
 }

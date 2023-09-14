@@ -17,7 +17,8 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Bean
-    ChannelInterceptor stompAuthenticationInterceptor() {return new StompAuthenticationInterceptor(); }
+    ChannelInterceptor stompAuthenticationInterceptor() {
+        return new StompAuthenticationInterceptor(); }
 
     @Bean
     HandshakeInterceptor socketAuthenticationInterceptor() {
@@ -26,7 +27,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
+        // pub
         config.setApplicationDestinationPrefixes("/app");
+
+        // sub
         config.enableSimpleBroker("/topic");
     }
 

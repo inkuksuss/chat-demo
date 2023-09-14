@@ -21,7 +21,6 @@ public class SocketAuthenticationInterceptor implements HandshakeInterceptor {
 
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-        logger.info("beforeHandshake = {}", request.getURI());
         String query = request.getURI().getQuery();
         if (!StringUtils.hasText(query)) {
             throw new AuthenticationException("인증 토큰이 존재하지 않습니다");
@@ -47,6 +46,5 @@ public class SocketAuthenticationInterceptor implements HandshakeInterceptor {
 
     @Override
     public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Exception exception) {
-
     }
 }
