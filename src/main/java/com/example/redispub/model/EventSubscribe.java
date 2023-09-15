@@ -27,9 +27,11 @@ public class EventSubscribe implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            logger.info("message = {}, pattern = {}", objectMapper.readValue(message.getBody(), MessageDto.class), pattern);
+            MessageDto messageDto = objectMapper.readValue(message.getBody(), MessageDto.class);
+            logger.info("message = {}, pattern = {}",messageDto , pattern);
             logger.info("channel = {}", message.getChannel());
-            simpMessagingTemplate.convertAndSend("/topic/room/1", message.getBody());
+
+            simpMessagingTemplate.convertAndSend("/topic/room/1", messageDto);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

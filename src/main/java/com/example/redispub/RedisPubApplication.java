@@ -40,8 +40,13 @@ public class RedisPubApplication {
 		roomDto2.setRoomId(1L);
 		roomDto2.setMemberId(2L);
 
+		RoomDto roomDto3 = new RoomDto();
+		roomDto3.setRoomId(2L);
+		roomDto3.setMemberId(3L);
+
 		roomRepository.save(roomDto1);
 		roomRepository.save(roomDto2);
+		roomRepository.save(roomDto3);
 	}
 
 	private void initMemberData() {
@@ -53,7 +58,12 @@ public class RedisPubApplication {
 		memberDto2.setId(2L);
 		memberDto2.setName("user2");
 
+		MemberDto memberDto3 = new MemberDto();
+		memberDto3.setId(3L);
+		memberDto3.setName("user3");
+
 		memberRepository.save(memberDto1);
 		memberRepository.save(memberDto2);
+		memberRepository.save(memberDto3);
 	}
 }
