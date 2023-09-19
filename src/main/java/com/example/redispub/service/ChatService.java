@@ -27,6 +27,22 @@ public class ChatService {
         this.roomRepository = roomRepository;
     }
 
+    public void initRoomList(RequestDto requestDto) {
+
+        List<String> roomIdList = roomRepository.findByMemberId(Long.valueOf(requestDto.getToken())).stream()
+                .map(RoomDto::getRoomId)
+                .map(String::valueOf)
+                .toList();
+
+        chatRepository.subscribe(roomIdList);
+
+        MessageDto messageDto = new MessageDto();
+        messageDto.setSenderId(Long.valueOf(requestDto.getToken()));
+        messageDto.setName(requestDto.getName());
+
+        redisTemplate.convertAndSend("/init", messageDto);
+    }
+
     public void joinRoom(Long memberId) {
         List<String> roomIdList = roomRepository.findByMemberId(memberId).stream()
                 .map(RoomDto::getRoomId)

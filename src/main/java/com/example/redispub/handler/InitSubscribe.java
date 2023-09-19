@@ -1,27 +1,25 @@
-package com.example.redispub.model;
+package com.example.redispub.handler;
 
 import com.example.redispub.service.dto.MessageDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-@Component
-public class EventSubscribe implements MessageListener {
+public class InitSubscribe implements MessageListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(EventSubscribe.class);
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final Logger logger = LoggerFactory.getLogger(InitSubscribe.class);
 
+    private final ObjectMapper objectMapper;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public EventSubscribe(SimpMessagingTemplate simpMessagingTemplate) {
+    public InitSubscribe(SimpMessagingTemplate simpMessagingTemplate) {
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.objectMapper = new ObjectMapper();
     }
 
     @Override
@@ -31,7 +29,9 @@ public class EventSubscribe implements MessageListener {
             logger.info("message = {}, pattern = {}",messageDto , pattern);
             logger.info("channel = {}", message.getChannel());
 
-            simpMessagingTemplate.convertAndSend("/topic/room/1", messageDto);
+            Long senderId = messageDto.getSenderId();
+
+            simpMessagingTemplate.convertAndSendToUser(messageDto.getName(), "/queue/init", "hello");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -1,6 +1,6 @@
 package com.example.redispub.repository;
 
-import com.example.redispub.model.EventSubscribe;
+import com.example.redispub.handler.MessageSubscribe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
@@ -27,6 +27,6 @@ public class ChatRedisRepositoryImpl implements ChatRedisRepository {
                 .map(channel -> new ChannelTopic("/room/" + channel))
                 .toList();
 
-        redisContainer.addMessageListener(new EventSubscribe(simpMessagingTemplate), topicList);
+        redisContainer.addMessageListener(new MessageSubscribe(simpMessagingTemplate), topicList);
     }
 }

@@ -2,6 +2,7 @@ package com.example.redispub.config;
 
 import com.example.redispub.handler.SocketAuthenticationInterceptor;
 import com.example.redispub.handler.StompAuthenticationInterceptor;
+import com.example.redispub.handler.StompHandshakeHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -32,12 +33,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
         // sub
         config.enableSimpleBroker("/topic", "/queue");
+        config.setUserDestinationPrefix("/user");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/chat-server")
                 .addInterceptors(socketAuthenticationInterceptor())
+                .setHandshakeHandler(new StompHandshakeHandler())
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
     }

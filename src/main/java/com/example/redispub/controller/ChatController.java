@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 
+import java.security.Principal;
+
 
 @Controller
 public class ChatController {
@@ -16,6 +18,13 @@ public class ChatController {
 
     public ChatController(ChatService chatService) {
         this.chatService = chatService;
+    }
+
+    @MessageMapping("/chat/init")
+    public void init(Principal principal, RequestDto requestDto) {
+
+        requestDto.setName(principal.getName());
+        chatService.initRoomList(requestDto);
     }
 
     @MessageMapping("/chat/join")
