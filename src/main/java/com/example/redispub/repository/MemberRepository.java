@@ -1,7 +1,7 @@
 package com.example.redispub.repository;
 
 
-import com.example.redispub.repository.dto.MemberDto;
+import com.example.redispub.entity.Member;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
@@ -11,15 +11,17 @@ import java.util.Optional;
 @Repository
 public class MemberRepository {
 
-    private final static Map<Long, MemberDto> store = new HashMap<>();
+    private final static Map<Long, Member> store = new HashMap<>();
+    private static Long sequence = 0L;
 
-    public MemberDto save(MemberDto memberDto) {
-        store.put(memberDto.getId(), memberDto);
+    public Member save(Member member) {
+        member.setId(++sequence);
+        store.put(member.getId(), member);
 
-        return memberDto;
+        return member;
     }
 
-    public Optional<MemberDto> findById(Long id) {
+    public Optional<Member> findById(Long id) {
         return Optional.ofNullable(store.get(id));
     }
 }

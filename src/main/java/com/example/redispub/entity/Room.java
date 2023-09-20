@@ -1,10 +1,9 @@
-package com.example.redispub.repository.dto;
+package com.example.redispub.entity;
 
 
-public class RoomDto {
+public class Room {
 
     private Long id;
-    private Long roomId;
     private Long memberId;
 
     public Long getId() {
@@ -13,14 +12,6 @@ public class RoomDto {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public Long getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
     }
 
     public Long getMemberId() {

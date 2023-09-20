@@ -1,6 +1,7 @@
 package com.example.redispub.config;
 
 import com.example.redispub.handler.InitSubscribe;
+import com.example.redispub.handler.MessageSubscribe;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,11 +27,15 @@ public class RedisConfig {
     }
 
     @Bean
+    MessageListener messageSubscribe() { return new MessageSubscribe(simpMessagingTemplate); }
+
+    @Bean
     RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory) {
 
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(initSubscribe(), new ChannelTopic("/init"));
+        container.addMessageListener(messageSubscribe(), new ChannelTopic("/message"));
 
         return container;
     }

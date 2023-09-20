@@ -1,9 +1,13 @@
-package com.example.redispub.repository.dto;
+package com.example.redispub.entity;
 
-public class MemberDto {
+public class Member {
 
     private Long id;
     private String name;
+
+    public Member(String name) {
+        this.name = name;
+    }
 
     public Long getId() {
         return id;
@@ -15,9 +19,5 @@ public class MemberDto {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

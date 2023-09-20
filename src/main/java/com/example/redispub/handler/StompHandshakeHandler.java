@@ -1,6 +1,7 @@
 package com.example.redispub.handler;
 
 import com.example.redispub.model.StompPrincipal;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.support.DefaultHandshakeHandler;

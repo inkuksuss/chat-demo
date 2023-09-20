@@ -1,6 +1,6 @@
 package com.example.redispub.handler;
 
-import com.example.redispub.service.dto.MessageDto;
+import com.example.redispub.service.dto.ChatDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,13 +25,11 @@ public class InitSubscribe implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            MessageDto messageDto = objectMapper.readValue(message.getBody(), MessageDto.class);
-            logger.info("message = {}, pattern = {}",messageDto , pattern);
+            ChatDto chatDto = objectMapper.readValue(message.getBody(), ChatDto.class);
+            logger.info("message = {}, pattern = {}", chatDto, pattern);
             logger.info("channel = {}", message.getChannel());
 
-            Long senderId = messageDto.getSenderId();
-
-            simpMessagingTemplate.convertAndSendToUser(messageDto.getName(), "/queue/init", "hello");
+            simpMessagingTemplate.convertAndSendToUser(chatDto.getName(), "/queue/init", chatDto);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

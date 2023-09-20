@@ -1,14 +1,15 @@
 package com.example.redispub.service;
 
 import com.example.redispub.repository.ChatRepository;
+import com.example.redispub.repository.MessageRepository;
 import com.example.redispub.repository.RoomRepository;
-import com.example.redispub.repository.dto.RoomDto;
+import com.example.redispub.entity.Room;
 import com.example.redispub.request.RequestDto;
-import com.example.redispub.service.dto.MessageDto;
+import com.example.redispub.service.dto.ChatDto;
+import com.example.redispub.entity.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.types.RedisClientInfo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,33 +20,34 @@ public class ChatService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final ChatRepository chatRepository;
     private final RoomRepository roomRepository;
+    private final MessageRepository messageRepository;
     private final Logger logger = LoggerFactory.getLogger(ChatService.class);
 
-    public ChatService(RedisTemplate<String, Object> redisTemplate, ChatRepository chatRepository, RoomRepository roomRepository) {
+    public ChatService(RedisTemplate<String, Object> redisTemplate, ChatRepository chatRepository, RoomRepository roomRepository, MessageRepository messageRepository) {
         this.redisTemplate = redisTemplate;
         this.chatRepository = chatRepository;
         this.roomRepository = roomRepository;
+        this.messageRepository = messageRepository;
     }
 
     public void initRoomList(RequestDto requestDto) {
 
         List<String> roomIdList = roomRepository.findByMemberId(Long.valueOf(requestDto.getToken())).stream()
-                .map(RoomDto::getRoomId)
+                .map(Room::getRoomId)
                 .map(String::valueOf)
                 .toList();
 
-        chatRepository.subscribe(roomIdList);
+        ChatDto<List<String>> chatDto = new ChatDto<>();
+        chatDto.setSenderId(Long.valueOf(requestDto.getToken()));
+        chatDto.setName(requestDto.getName());
+        chatDto.setData(roomIdList);
 
-        MessageDto messageDto = new MessageDto();
-        messageDto.setSenderId(Long.valueOf(requestDto.getToken()));
-        messageDto.setName(requestDto.getName());
-
-        redisTemplate.convertAndSend("/init", messageDto);
+        redisTemplate.convertAndSend("/init", chatDto);
     }
 
     public void joinRoom(Long memberId) {
         List<String> roomIdList = roomRepository.findByMemberId(memberId).stream()
-                .map(RoomDto::getRoomId)
+                .map(Room::getRoomId)
                 .map(String::valueOf)
                 .toList();
 
@@ -55,10 +57,12 @@ public class ChatService {
 
     public void sendMessage(Long senderId, Long roomId, String message) {
         logger.info("chatService.sendMessage roomId = {}, message = {}", roomId,  message);
-        MessageDto messageDto = new MessageDto();
-        messageDto.setSenderId(senderId);
-        messageDto.setMessage(message);
+        new Message(roomId, message, );
+        ChatDto<Message> chatDto = new ChatDto<>();
+        chatDto.setSenderId(senderId);
+        chatDto.setRoomId(roomId);
+        chatDto.setMessage(message);
 
-        redisTemplate.convertAndSend("/room/" + roomId, messageDto);
+        redisTemplate.convertAndSend("/message", chatDto);
     }
 }
