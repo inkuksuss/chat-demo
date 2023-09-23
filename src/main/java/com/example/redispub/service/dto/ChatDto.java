@@ -1,5 +1,7 @@
 package com.example.redispub.service.dto;
 
+import com.example.redispub.enums.MessageType;
+
 import java.io.Serializable;
 
 public class ChatDto<T> implements Serializable {
@@ -7,7 +9,7 @@ public class ChatDto<T> implements Serializable {
     private Long senderId;
     private Long roomId;
     private String name;
-    private String message;
+    private MessageType messageType;
     private T data;
 
     public Long getSenderId() {
@@ -26,25 +28,6 @@ public class ChatDto<T> implements Serializable {
         this.name = name;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    @Override
-    public String toString() {
-        return "MessageDto{" +
-                "senderId=" + senderId +
-                ", roomId=" + roomId +
-                ", name='" + name + '\'' +
-                ", message='" + message + '\'' +
-                ", data=" + data +
-                '}';
-    }
-
     public Long getRoomId() {
         return roomId;
     }
@@ -59,5 +42,24 @@ public class ChatDto<T> implements Serializable {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    public MessageType getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(MessageType messageType) {
+        this.messageType = messageType;
+    }
+
+    @Override
+    public String toString() {
+        return "ChatDto{" +
+                "senderId=" + senderId +
+                ", roomId=" + roomId +
+                ", name='" + name + '\'' +
+                ", messageType=" + messageType +
+                ", data=" + data +
+                '}';
     }
 }

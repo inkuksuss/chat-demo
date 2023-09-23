@@ -11,4 +11,6 @@ public interface RoomMappingRepository extends CrudRepository<RoomMapping, Long>
 
     List<RoomMapping> findByMemberId(Long memberId);
 
+    Optional<RoomMapping> findByMemberIdAndRoomId(Long memberId, Long roomId);
+
 }

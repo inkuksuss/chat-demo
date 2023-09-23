@@ -1,34 +1,28 @@
-package com.example.redispub.entity;
+package com.example.redispub.service.dto;
 
+import com.example.redispub.enums.MessageType;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
-@Entity
-public class RoomMapping {
+public class MessageDto {
 
-
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "ROOM_MAPPING_ID")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ROOM_ID")
-    private Room room;
+    private Long memberId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_ID")
-    private Member member;
+    private Long roomId;
+
+    private String body;
+
+    private MessageType messageType;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime created;
-
-    public RoomMapping() {}
 
     public Long getId() {
         return id;
@@ -38,20 +32,36 @@ public class RoomMapping {
         this.id = id;
     }
 
-    public Room getRoom() {
-        return room;
+    public Long getMemberId() {
+        return memberId;
     }
 
-    public void setRoom(Room room) {
-        this.room = room;
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
     }
 
-    public Member getMember() {
-        return member;
+    public Long getRoomId() {
+        return roomId;
     }
 
-    public void setMember(Member member) {
-        this.member = member;
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public MessageType getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(MessageType messageType) {
+        this.messageType = messageType;
     }
 
     public LocalDateTime getCreated() {

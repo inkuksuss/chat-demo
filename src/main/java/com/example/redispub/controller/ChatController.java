@@ -3,6 +3,7 @@ package com.example.redispub.controller;
 import com.example.redispub.authentication.AuthenticationUtils;
 import com.example.redispub.request.RequestDto;
 import com.example.redispub.service.ChatService;
+import com.example.redispub.service.dto.MessageDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -34,7 +35,12 @@ public class ChatController {
 
     @MessageMapping("/chat/message")
     public void sendMessage(RequestDto requestDto) {
-        Long memberId = AuthenticationUtils.getMemberId(requestDto.getToken());
-        chatService.sendMessage(memberId, requestDto.getRoomId(), requestDto.getData(), requestDto.getMessageType());
+        MessageDto messageDto = new MessageDto();
+        messageDto.setMemberId(AuthenticationUtils.getMemberId(requestDto.getToken()));
+        messageDto.setRoomId(requestDto.getRoomId());
+        messageDto.setBody(requestDto.getData());
+        messageDto.setMessageType(requestDto.getMessageType());
+
+        chatService.sendMessage(messageDto);
     }
 }

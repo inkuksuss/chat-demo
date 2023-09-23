@@ -1,12 +1,18 @@
 package com.example.redispub.entity;
 
 import com.example.redispub.enums.MessageType;
+import com.example.redispub.service.dto.MessageDto;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.persistence.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Entity
-public class Message {
+public class Message implements Serializable {
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "message_id")
@@ -25,6 +31,8 @@ public class Message {
     @Enumerated(value = EnumType.STRING)
     private MessageType type;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime created;
 
     public Long getId() {
@@ -73,5 +81,17 @@ public class Message {
 
     public void setCreated(LocalDateTime created) {
         this.created = created;
+    }
+
+    public MessageDto toEntity() {
+        MessageDto messageDto = new MessageDto();
+        messageDto.setId(this.id);
+        messageDto.setMemberId(this.member.getId());
+        messageDto.setRoomId(this.room.getId());
+        messageDto.setMessageType(this.type);
+        messageDto.setBody(this.body);
+        messageDto.setCreated(this.created);
+
+        return messageDto;
     }
 }

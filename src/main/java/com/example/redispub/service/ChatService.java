@@ -5,19 +5,22 @@ import com.example.redispub.entity.RoomMapping;
 import com.example.redispub.enums.MessageType;
 import com.example.redispub.repository.*;
 import com.example.redispub.entity.Room;
-import com.example.redispub.request.RequestDto;
 import com.example.redispub.service.dto.ChatDto;
 import com.example.redispub.entity.Message;
-import jakarta.annotation.Nullable;
+import com.example.redispub.service.dto.MessageDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 public class ChatService {
 
     private final RedisTemplate<String, Object> redisTemplate;
@@ -48,8 +51,8 @@ public class ChatService {
         List<Long> findRoomIdList = roomMappingRepository.findByMemberId(memberId)
                 .stream().map(roomMapping -> roomMapping.getRoom().getId()).toList();
 
-
         ChatDto<List<Long>> chatDto = new ChatDto<>();
+        chatDto.setSenderId(memberId);
         chatDto.setName(name);
         chatDto.setData(findRoomIdList);
 
@@ -66,32 +69,34 @@ public class ChatService {
 //        chatRepository.subscribe(roomIdList);
     }
 
-    public void sendMessage(Long senderId, Long roomId, String body, @Nullable MessageType messageType) {
-        logger.info("chatService.sendMessage roomId = {}, message = {}, type = {}", roomId,  body, messageType);
+    public void sendMessage(MessageDto messageDto) {
+        Optional<RoomMapping> findMember = roomMappingRepository.findByMemberIdAndRoomId(messageDto.getMemberId(), messageDto.getRoomId());
+        findMember.orElseThrow(() -> new NoSuchElementException("방에 참가하지 않은 인원입니다."));
 
-        Message message = createMessage(senderId, roomId, body, messageType);
-        messageRepository.save(message);
+        Message message = this.createMessage(messageDto);
+        Message savedMessage = messageRepository.save(message);
 
-        ChatDto<Message> chatDto = new ChatDto<>();
-        chatDto.setSenderId(senderId);
-        chatDto.setRoomId(roomId);
-        chatDto.setData(message);
+        ChatDto<MessageDto> chatDto = new ChatDto<>();
+        chatDto.setSenderId(savedMessage.getMember().getId());
+        chatDto.setRoomId(savedMessage.getRoom().getId());
+        chatDto.setMessageType(savedMessage.getType());
+        chatDto.setData(savedMessage.toEntity());
 
         redisTemplate.convertAndSend("/message", chatDto);
     }
 
-    private static Message createMessage(Long senderId, Long roomId, String body, MessageType messageType) {
+    private Message createMessage(MessageDto messageDto) {
         Member member = new Member();
-        member.setId(senderId);
+        member.setId(messageDto.getMemberId());
 
         Room room = new Room();
-        room.setId(roomId);
+        room.setId(messageDto.getRoomId());
 
         Message message = new Message();
         message.setRoom(room);
         message.setMember(member);
-        message.setBody(body);
-        message.setType(messageType == null ? MessageType.MESSAGE : messageType);
+        message.setBody(messageDto.getBody());
+        message.setType(messageDto.getMessageType() == null ? MessageType.MESSAGE : messageDto.getMessageType());
         message.setCreated(LocalDateTime.now());
         return message;
     }

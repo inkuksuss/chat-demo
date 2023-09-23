@@ -1,7 +1,9 @@
 package com.example.redispub.handler;
 
+import com.example.redispub.response.ResponseDto;
 import com.example.redispub.service.dto.ChatDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.connection.Message;
@@ -28,8 +30,14 @@ public class MessageSubscribe implements MessageListener {
             ChatDto chatDto = objectMapper.readValue(message.getBody(), ChatDto.class);
             logger.info("message = {}, pattern = {}", chatDto, pattern);
             logger.info("channel = {}", message.getChannel());
+            ResponseDto responseDto = new ResponseDto();
 
-            simpMessagingTemplate.convertAndSend("/topic/room/" + chatDto.getRoomId(), chatDto);
+            responseDto.setMemberId(chatDto.getSenderId());
+            responseDto.setRoomId(chatDto.getRoomId());
+            responseDto.setMessageType(chatDto.getMessageType());
+            responseDto.setData(chatDto.getData());
+
+            simpMessagingTemplate.convertAndSend("/topic/room/" + chatDto.getRoomId(), responseDto);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
