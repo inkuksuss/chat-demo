@@ -1,5 +1,7 @@
 package com.example.redispub.request;
 
+import com.example.redispub.enums.MessageType;
+
 import java.io.Serializable;
 
 public class RequestDto implements Serializable {
@@ -8,16 +10,7 @@ public class RequestDto implements Serializable {
     private String name;
     private Long roomId;
     private String data;
-
-    @Override
-    public String toString() {
-        return "RequestDto{" +
-                "token='" + token + '\'' +
-                ", name='" + name + '\'' +
-                ", roomId=" + roomId +
-                ", data='" + data + '\'' +
-                '}';
-    }
+    private MessageType messageType;
 
     public String getToken() {
         return token;
@@ -49,5 +42,24 @@ public class RequestDto implements Serializable {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public MessageType getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(MessageType messageType) {
+        this.messageType = messageType;
+    }
+
+    @Override
+    public String toString() {
+        return "RequestDto{" +
+                "token='" + token + '\'' +
+                ", name='" + name + '\'' +
+                ", roomId=" + roomId +
+                ", data='" + data + '\'' +
+                ", messageType=" + messageType +
+                '}';
     }
 }

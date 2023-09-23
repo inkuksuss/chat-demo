@@ -1,5 +1,6 @@
 package com.example.redispub.controller;
 
+import com.example.redispub.authentication.AuthenticationUtils;
 import com.example.redispub.request.RequestDto;
 import com.example.redispub.service.ChatService;
 import org.slf4j.Logger;
@@ -22,22 +23,18 @@ public class ChatController {
 
     @MessageMapping("/chat/init")
     public void init(Principal principal, RequestDto requestDto) {
-
-        requestDto.setName(principal.getName());
-        chatService.initRoomList(requestDto);
+        Long memberId = AuthenticationUtils.getMemberId(requestDto.getToken());
+        chatService.initRoomList(principal.getName(), memberId);
     }
 
     @MessageMapping("/chat/join")
     public void join(RequestDto requestDto) {
-        chatService.joinRoom(this.getMemberId(requestDto));
+//        chatService.joinRoom(this.getMemberId(requestDto));
     }
 
     @MessageMapping("/chat/message")
     public void sendMessage(RequestDto requestDto) {
-        chatService.sendMessage(this.getMemberId(requestDto), requestDto.getRoomId(), requestDto.getData());
-    }
-
-    private Long getMemberId(RequestDto requestDto) {
-        return Long.valueOf(requestDto.getToken());
+        Long memberId = AuthenticationUtils.getMemberId(requestDto.getToken());
+        chatService.sendMessage(memberId, requestDto.getRoomId(), requestDto.getData(), requestDto.getMessageType());
     }
 }

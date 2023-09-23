@@ -9,6 +9,7 @@ import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.io.IOException;
+import java.util.List;
 
 public class InitSubscribe implements MessageListener {
 
@@ -25,9 +26,8 @@ public class InitSubscribe implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            ChatDto chatDto = objectMapper.readValue(message.getBody(), ChatDto.class);
+            ChatDto<List<Long>> chatDto = objectMapper.readValue(message.getBody(), ChatDto.class);
             logger.info("message = {}, pattern = {}", chatDto, pattern);
-            logger.info("channel = {}", message.getChannel());
 
             simpMessagingTemplate.convertAndSendToUser(chatDto.getName(), "/queue/init", chatDto);
         } catch (IOException e) {

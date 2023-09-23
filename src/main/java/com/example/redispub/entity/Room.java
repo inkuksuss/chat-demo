@@ -1,10 +1,20 @@
 package com.example.redispub.entity;
 
 
+import jakarta.persistence.*;
+
+@Entity
 public class Room {
 
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "ROOM_ID")
     private Long id;
-    private Long memberId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "CREATOR_ID", referencedColumnName = "MEMBER_ID")
+    private Member creator;
+
+    public Room() {}
 
     public Long getId() {
         return id;
@@ -14,11 +24,11 @@ public class Room {
         this.id = id;
     }
 
-    public Long getMemberId() {
-        return memberId;
+    public Member getCreator() {
+        return creator;
     }
 
-    public void setMemberId(Long memberId) {
-        this.memberId = memberId;
+    public void setCreator(Member creator) {
+        this.creator = creator;
     }
 }
