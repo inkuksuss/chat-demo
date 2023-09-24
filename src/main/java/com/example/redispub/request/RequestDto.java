@@ -7,9 +7,13 @@ import java.io.Serializable;
 public class RequestDto implements Serializable {
 
     private String token;
+
     private String name;
+
     private Long roomId;
+
     private String data;
+
     private MessageType messageType;
 
     public String getToken() {

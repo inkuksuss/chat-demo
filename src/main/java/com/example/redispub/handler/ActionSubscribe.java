@@ -1,9 +1,9 @@
 package com.example.redispub.handler;
 
 import com.example.redispub.enums.ActionType;
+import com.example.redispub.enums.MessageType;
 import com.example.redispub.response.ResponseDto;
 import com.example.redispub.service.dto.ChatDto;
-import com.example.redispub.service.dto.MessageDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,14 +13,14 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.io.IOException;
 
-public class MessageSubscribe implements MessageListener {
+public class ActionSubscribe implements MessageListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(MessageSubscribe.class);
+    private static final Logger logger = LoggerFactory.getLogger(ActionSubscribe.class);
 
     private final ObjectMapper objectMapper;
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public MessageSubscribe(SimpMessagingTemplate simpMessagingTemplate) {
+    public ActionSubscribe(SimpMessagingTemplate simpMessagingTemplate) {
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.objectMapper = new ObjectMapper();
     }
@@ -28,13 +28,25 @@ public class MessageSubscribe implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            ChatDto<MessageDto> chatDto = objectMapper.readValue(message.getBody(), ChatDto.class);
-            ResponseDto responseDto = new ResponseDto();
+            ChatDto chatDto = objectMapper.readValue(message.getBody(), ChatDto.class);
+            ActionType actionType = chatDto.getActionType();
 
+            ResponseDto responseDto = new ResponseDto();
             responseDto.setMemberId(chatDto.getMemberId());
             responseDto.setRoomId(chatDto.getRoomId());
-            responseDto.setActionType(ActionType.MESSAGE);
-            responseDto.setData(chatDto.getData());
+            responseDto.setActionType(actionType);
+
+            switch (actionType) {
+                case ROOM_JOIN:
+
+
+                    break;
+                case ROOM_QUIT:
+
+                    break;
+                default:
+                    break;
+            }
 
             simpMessagingTemplate.convertAndSend("/topic/room/" + chatDto.getRoomId(), responseDto);
         } catch (IOException e) {

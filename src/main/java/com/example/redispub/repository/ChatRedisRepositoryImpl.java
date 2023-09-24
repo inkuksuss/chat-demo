@@ -1,7 +1,6 @@
 package com.example.redispub.repository;
 
 import com.example.redispub.handler.MessageSubscribe;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -13,11 +12,11 @@ import java.util.List;
 public class ChatRedisRepositoryImpl implements ChatRedisRepository {
 
     private final RedisMessageListenerContainer redisContainer;
-    @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public ChatRedisRepositoryImpl(RedisMessageListenerContainer redisContainer) {
+    public ChatRedisRepositoryImpl(RedisMessageListenerContainer redisContainer, SimpMessagingTemplate simpMessagingTemplate) {
         this.redisContainer = redisContainer;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     @Override

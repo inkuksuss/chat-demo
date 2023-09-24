@@ -1,5 +1,6 @@
 package com.example.redispub.handler;
 
+import com.example.redispub.enums.ActionType;
 import com.example.redispub.enums.MessageType;
 import com.example.redispub.response.ResponseDto;
 import com.example.redispub.service.dto.ChatDto;
@@ -31,11 +32,11 @@ public class InitSubscribe implements MessageListener {
             ChatDto<List<Long>> chatDto = objectMapper.readValue(message.getBody(), ChatDto.class);
 
             ResponseDto responseDto = new ResponseDto();
-            responseDto.setMessageType(MessageType.ROOM_INIT);
-            responseDto.setMemberId(chatDto.getSenderId());
+            responseDto.setActionType(ActionType.ROOM_INIT);
+            responseDto.setMemberId(chatDto.getMemberId());
             responseDto.setData(chatDto.getData());
 
-            simpMessagingTemplate.convertAndSendToUser(chatDto.getName(), "/queue/init", responseDto);
+            simpMessagingTemplate.convertAndSendToUser(chatDto.getPrincipalName(), "/queue/init", responseDto);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

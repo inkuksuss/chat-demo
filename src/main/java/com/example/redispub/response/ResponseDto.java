@@ -1,13 +1,15 @@
 package com.example.redispub.response;
 
-import com.example.redispub.enums.MessageType;
-import org.springframework.data.repository.CrudRepository;
+import com.example.redispub.enums.ActionType;
 
 public class ResponseDto {
 
     private Long memberId;
+
     private Long roomId;
-    private MessageType messageType;
+
+    private ActionType actionType;
+
     private Object data;
 
     public Long getRoomId() {
@@ -26,12 +28,12 @@ public class ResponseDto {
         this.memberId = memberId;
     }
 
-    public MessageType getMessageType() {
-        return messageType;
+    public ActionType getActionType() {
+        return actionType;
     }
 
-    public void setMessageType(MessageType messageType) {
-        this.messageType = messageType;
+    public void setActionType(ActionType actionType) {
+        this.actionType = actionType;
     }
 
     public Object getData() {

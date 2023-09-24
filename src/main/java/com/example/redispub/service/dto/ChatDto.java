@@ -1,31 +1,35 @@
 package com.example.redispub.service.dto;
 
-import com.example.redispub.enums.MessageType;
+import com.example.redispub.enums.ActionType;
 
 import java.io.Serializable;
 
 public class ChatDto<T> implements Serializable {
 
-    private Long senderId;
+    private Long memberId;
+
     private Long roomId;
-    private String name;
-    private MessageType messageType;
+
+    private String principalName;
+
+    private ActionType actionType;
+
     private T data;
 
-    public Long getSenderId() {
-        return senderId;
+    public Long getMemberId() {
+        return memberId;
     }
 
-    public void setSenderId(Long senderId) {
-        this.senderId = senderId;
+    public void setMemberId(Long memberId) {
+        this.memberId = memberId;
     }
 
-    public String getName() {
-        return name;
+    public String getPrincipalName() {
+        return principalName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPrincipalName(String principalName) {
+        this.principalName = principalName;
     }
 
     public Long getRoomId() {
@@ -44,21 +48,21 @@ public class ChatDto<T> implements Serializable {
         this.data = data;
     }
 
-    public MessageType getMessageType() {
-        return messageType;
+    public ActionType getActionType() {
+        return actionType;
     }
 
-    public void setMessageType(MessageType messageType) {
-        this.messageType = messageType;
+    public void setActionType(ActionType actionType) {
+        this.actionType = actionType;
     }
 
     @Override
     public String toString() {
         return "ChatDto{" +
-                "senderId=" + senderId +
+                "senderId=" + memberId +
                 ", roomId=" + roomId +
-                ", name='" + name + '\'' +
-                ", messageType=" + messageType +
+                ", name='" + principalName + '\'' +
+                ", actionType=" + actionType +
                 ", data=" + data +
                 '}';
     }

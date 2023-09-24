@@ -1,5 +1,6 @@
 package com.example.redispub.config;
 
+import com.example.redispub.handler.ActionSubscribe;
 import com.example.redispub.handler.InitSubscribe;
 import com.example.redispub.handler.MessageSubscribe;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,12 +35,16 @@ public class RedisConfig {
     MessageListener messageSubscribe() { return new MessageSubscribe(simpMessagingTemplate); }
 
     @Bean
+    MessageListener actionSubscribe() { return new ActionSubscribe(simpMessagingTemplate); }
+
+    @Bean
     RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory) {
 
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(initSubscribe(), new ChannelTopic("/init"));
         container.addMessageListener(messageSubscribe(), new ChannelTopic("/message"));
+        container.addMessageListener(actionSubscribe(), new ChannelTopic("/actions"));
 
         return container;
     }
@@ -54,8 +59,8 @@ public class RedisConfig {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
         template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
-//        template.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
+//        template.setValueSerializer(new GenericJackson2JsonRedisSerializer(objectMapper));
+        template.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
 
         return template;
     }

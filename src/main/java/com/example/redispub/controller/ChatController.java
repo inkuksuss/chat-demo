@@ -24,13 +24,12 @@ public class ChatController {
 
     @MessageMapping("/chat/init")
     public void init(Principal principal, RequestDto requestDto) {
-        Long memberId = AuthenticationUtils.getMemberId(requestDto.getToken());
-        chatService.initRoomList(principal.getName(), memberId);
+        chatService.initRoomList(principal.getName(), AuthenticationUtils.getMemberId(requestDto.getToken()));
     }
 
     @MessageMapping("/chat/join")
     public void join(RequestDto requestDto) {
-//        chatService.joinRoom(this.getMemberId(requestDto));
+        chatService.joinRoom(AuthenticationUtils.getMemberId(requestDto.getToken()), requestDto.getRoomId());
     }
 
     @MessageMapping("/chat/message")
