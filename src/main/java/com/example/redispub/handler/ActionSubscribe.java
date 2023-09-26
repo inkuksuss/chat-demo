@@ -1,9 +1,9 @@
 package com.example.redispub.handler;
 
 import com.example.redispub.enums.ActionType;
-import com.example.redispub.enums.MessageType;
-import com.example.redispub.response.ResponseDto;
+import com.example.redispub.controller.response.ResponseDto;
 import com.example.redispub.service.dto.ChatDto;
+import com.example.redispub.service.dto.RoomInfoDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +28,14 @@ public class ActionSubscribe implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            ChatDto chatDto = objectMapper.readValue(message.getBody(), ChatDto.class);
+            ChatDto<RoomInfoDto> chatDto = objectMapper.readValue(message.getBody(), ChatDto.class);
             ActionType actionType = chatDto.getActionType();
 
             ResponseDto responseDto = new ResponseDto();
             responseDto.setMemberId(chatDto.getMemberId());
             responseDto.setRoomId(chatDto.getRoomId());
             responseDto.setActionType(actionType);
+            responseDto.setData(chatDto.getData());
 
             switch (actionType) {
                 case ROOM_JOIN:

@@ -1,6 +1,6 @@
 package com.example.redispub.handler;
 
-import com.example.redispub.request.RequestDto;
+import com.example.redispub.controller.request.RequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,13 +1,15 @@
 package com.example.redispub.repository;
 
 import com.example.redispub.entity.RoomInfo;
-import org.springframework.data.repository.CrudRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface ChatRepository extends CrudRepository<RoomInfo, String>, ChatRedisRepository {
+public interface RedisRepository {
+
+    void saveRoomInfo(RoomInfo roomInfo) throws JsonProcessingException;
 
     List<RoomInfo> findByMemberId(Long memberId);
 

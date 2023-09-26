@@ -1,8 +1,7 @@
 package com.example.redispub.handler;
 
 import com.example.redispub.enums.ActionType;
-import com.example.redispub.enums.MessageType;
-import com.example.redispub.response.ResponseDto;
+import com.example.redispub.controller.response.ResponseDto;
 import com.example.redispub.service.dto.ChatDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -36,7 +35,7 @@ public class InitSubscribe implements MessageListener {
             responseDto.setMemberId(chatDto.getMemberId());
             responseDto.setData(chatDto.getData());
 
-            simpMessagingTemplate.convertAndSendToUser(chatDto.getPrincipalName(), "/queue/init", responseDto);
+            simpMessagingTemplate.convertAndSendToUser(chatDto.getPrincipalName(), "/queue/init", objectMapper.writeValueAsString(responseDto));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

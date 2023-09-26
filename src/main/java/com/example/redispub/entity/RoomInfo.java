@@ -6,11 +6,11 @@ import org.springframework.data.redis.core.index.Indexed;
 
 import java.io.Serializable;
 
-@RedisHash("roomInfo")
+@RedisHash(value = "roomInfo")
 public class RoomInfo implements Serializable {
 
     @Id
-    private String roomInfoId;
+    private String id;
 
     @Indexed
     private Long roomId;
@@ -23,12 +23,8 @@ public class RoomInfo implements Serializable {
         this.memberId = memberId;
     }
 
-    public String getRoomInfoId() {
-        return roomInfoId;
-    }
-
-    public void setRoomInfoId(String roomInfoId) {
-        this.roomInfoId = roomInfoId;
+    public String getId() {
+        return id;
     }
 
     public Long getRoomId() {

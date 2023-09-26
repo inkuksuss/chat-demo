@@ -1,7 +1,7 @@
 package com.example.redispub.handler;
 
 import com.example.redispub.enums.ActionType;
-import com.example.redispub.response.ResponseDto;
+import com.example.redispub.controller.response.ResponseDto;
 import com.example.redispub.service.dto.ChatDto;
 import com.example.redispub.service.dto.MessageDto;
 import com.fasterxml.jackson.databind.ObjectMapper;

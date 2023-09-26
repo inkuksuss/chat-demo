@@ -1,9 +1,10 @@
 package com.example.redispub.controller;
 
 import com.example.redispub.authentication.AuthenticationUtils;
-import com.example.redispub.request.RequestDto;
+import com.example.redispub.controller.request.RequestDto;
 import com.example.redispub.service.ChatService;
 import com.example.redispub.service.dto.MessageDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -28,7 +29,7 @@ public class ChatController {
     }
 
     @MessageMapping("/chat/join")
-    public void join(RequestDto requestDto) {
+    public void join(RequestDto requestDto) throws JsonProcessingException {
         chatService.joinRoom(AuthenticationUtils.getMemberId(requestDto.getToken()), requestDto.getRoomId());
     }
 

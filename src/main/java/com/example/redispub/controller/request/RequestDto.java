@@ -1,4 +1,4 @@
-package com.example.redispub.request;
+package com.example.redispub.controller.request;
 
 import com.example.redispub.enums.MessageType;
 

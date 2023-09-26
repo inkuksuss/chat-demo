@@ -1,4 +1,4 @@
-package com.example.redispub.response;
+package com.example.redispub.controller.response;
 
 import com.example.redispub.enums.ActionType;
 
