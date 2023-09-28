@@ -1,6 +1,6 @@
 package com.example.redispub.handler;
 
-import com.example.redispub.authentication.AuthenticationUtils;
+import com.example.redispub.utils.AuthenticationUtils;
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

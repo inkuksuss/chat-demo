@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface RedisRepository {
 
-    void saveRoomInfo(RoomInfo roomInfo) throws JsonProcessingException;
+    void addMemberInRoom(Long roomId, Long memberId);
 
     List<RoomInfo> findByMemberId(Long memberId);
 

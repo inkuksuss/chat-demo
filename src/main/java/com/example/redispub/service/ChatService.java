@@ -27,7 +27,6 @@ import java.util.Optional;
 //@Transactional(readOnly = true)
 public class ChatService {
 
-    private final RedisTemplate<String, Object> redisTemplate;
     private final RedisService redisService;
     private final MemberRepository memberRepository;
     private final RoomRepository roomRepository;
@@ -35,13 +34,11 @@ public class ChatService {
     private final RoomMappingRepository roomMappingRepository;
     private final Logger logger = LoggerFactory.getLogger(ChatService.class);
 
-    public ChatService(RedisTemplate<String, Object> redisTemplate,
-                       RedisService redisService,
+    public ChatService(RedisService redisService,
                        MemberRepository memberRepository,
                        RoomRepository roomRepository,
                        MessageRepository messageRepository,
                        RoomMappingRepository roomMappingRepository) {
-        this.redisTemplate = redisTemplate;
         this.redisService = redisService;
         this.memberRepository = memberRepository;
         this.roomRepository = roomRepository;
@@ -49,7 +46,7 @@ public class ChatService {
         this.roomMappingRepository = roomMappingRepository;
     }
 
-    public void initRoomList(String name, Long memberId) {
+    public ChatDto<List<Long>> initRoomList(String name, Long memberId) {
         List<Long> findRoomIdList = roomMappingRepository.findByMemberId(memberId)
                 .stream().map(roomMapping -> roomMapping.getRoom().getId()).toList();
 
@@ -58,11 +55,11 @@ public class ChatService {
         chatDto.setPrincipalName(name);
         chatDto.setData(findRoomIdList);
 
-        redisTemplate.convertAndSend("/init", chatDto);
+        return chatDto;
     }
 
 //    @Transactional
-    public void joinRoom(Long memberId, Long roomId) throws JsonProcessingException {
+    public ChatDto<RoomInfoDto> joinRoom(Long memberId, Long roomId) throws JsonProcessingException {
         Assert.notNull(memberId, "member id can not be null");
         Assert.notNull(roomId, "room id can not be null");
 
@@ -84,7 +81,7 @@ public class ChatService {
         chatDto.setActionType(ActionType.ROOM_JOIN);
         chatDto.setData(this.getRoomParticipationInformation(roomId, findMemberList));
 
-        redisTemplate.convertAndSend("/actions", chatDto);
+        return chatDto;
     }
 
     private RoomInfoDto getRoomParticipationInformation(Long roomId, List<RoomMapping> findMemberList) {
@@ -101,7 +98,7 @@ public class ChatService {
     }
 
     @Transactional
-    public void sendMessage(MessageDto messageDto) {
+    public ChatDto<MessageDto> sendMessage(MessageDto messageDto) {
         Assert.notNull(messageDto.getMemberId(), "member id can not be null");
         Assert.notNull(messageDto.getRoomId(), "room id can not be null");
         Assert.notNull(messageDto.getBody(), "message body can not be null");
@@ -118,7 +115,7 @@ public class ChatService {
         chatDto.setActionType(ActionType.MESSAGE);
         chatDto.setData(savedMessage.toEntity());
 
-        redisTemplate.convertAndSend("/message", chatDto);
+        return chatDto;
     }
 
     private Message createMessage(MessageDto messageDto) {

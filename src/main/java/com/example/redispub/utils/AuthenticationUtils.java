@@ -1,4 +1,4 @@
-package com.example.redispub.authentication;
+package com.example.redispub.utils;
 
 public class AuthenticationUtils {
 
