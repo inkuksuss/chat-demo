@@ -20,10 +20,11 @@ public class RedisService {
 
     public void saveRoom(RoomInfo roomInfo) throws JsonProcessingException {
 //        redisRepository.deleteById(roomInfo.getRoomId().toString());
-        redisRepository.joinRoom(roomInfo);
+        redisRepository.enterRoom(roomInfo.getRoomId(), roomInfo.getMemberId());
     }
 
     public List<RoomInfo> findByRoomId(Long roomId) {
-        return redisRepository.findByRoomId(roomId);
+//        return redisRepository.findByRoomId(roomId);
+        return null;
     }
 }
