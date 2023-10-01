@@ -5,6 +5,13 @@ import jakarta.persistence.*;
 
 @Entity
 public class Member {
+    @Override
+    public String toString() {
+        return "Member{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "MEMBER_ID")

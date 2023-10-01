@@ -1,7 +1,6 @@
 package com.example.redispub.repository;
 
 import com.example.redispub.entity.RoomInfo;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.*;
