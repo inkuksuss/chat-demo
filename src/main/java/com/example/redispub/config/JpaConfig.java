@@ -19,8 +19,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-@Configuration
-@EnableJpaRepositories(basePackages = "com.example.redispub.repository", transactionManagerRef = "jpaTransactionManager")
+//@Configuration
+//@EnableJpaRepositories(basePackages = "com.example.redispub.repository",
+//        transactionManagerRef = "jpaTransactionManager")
 public class JpaConfig {
 
     @Autowired
@@ -49,8 +50,8 @@ public class JpaConfig {
         return emf;
     }
 
+//    @Bean
     @Primary
-    @Bean
     public PlatformTransactionManager jpaTransactionManager(EntityManagerFactory entityManagerFactory) {
         JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
         jpaTransactionManager.setEntityManagerFactory(entityManagerFactory);

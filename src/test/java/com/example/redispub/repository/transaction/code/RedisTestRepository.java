@@ -39,7 +39,22 @@ public class RedisTestRepository {
         });
     }
 
+    @Transactional
+    public void saveWithTx(Member member) {
+        String key = String.format("%s:%d", TEST_PREFIX, member.getId());
+        redisTemplate.opsForSet().add(key, member.getId());
+    }
+
+    @Transactional
+    public void saveWithEx(Member member) {
+        String key = String.format("%s:%d", TEST_PREFIX, member.getId());
+        redisTemplate.opsForSet().add(key, member.getId());
+
+        throw new RuntimeException("saveWithEx");
+    }
+
     public Set<Object> findById(Long id) {
-        return redisTemplate.opsForSet().members(String.valueOf(id));
+        String key = String.format("%s:%d", TEST_PREFIX, id);
+        return redisTemplate.opsForSet().members(key);
     }
 }

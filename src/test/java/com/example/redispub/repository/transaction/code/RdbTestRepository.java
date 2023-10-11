@@ -5,5 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface RdbTestRepository extends CrudRepository<Member, Long> {
+public interface RdbTestRepository extends CrudRepository<Member, Long>, RdbTestRepositoryCustom {
+
+
 }

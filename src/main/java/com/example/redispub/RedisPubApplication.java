@@ -32,7 +32,7 @@ public class RedisPubApplication {
 		SpringApplication.run(RedisPubApplication.class, args);
 	}
 
-	@EventListener(ApplicationReadyEvent.class)
+//	@EventListener(ApplicationReadyEvent.class)
 	public void init() {
 		initData();
 	}
