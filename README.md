@@ -2,4 +2,6 @@
 2. 한 트랜잭션 내 redis가 포함되면 TransactionSynchronizationManager의 synchronizations의 redisConnection을 가지고 있음.
     - 롤백 시 AbstractPlatformTransactionManager에서 모든 synchronizations invokeAfterCompletion() 호출 -> redis discard 
 3. 트랜잭션에 redis의 커넥션을 가저오면 (RedisConnectionUtils - doGetConnection()) synchronizations에 RedisTransactionSynchronizer를 set함
-      
+
+
+ERD: https://www.erdcloud.com/d/wJpLvAindpuFFi2WY
