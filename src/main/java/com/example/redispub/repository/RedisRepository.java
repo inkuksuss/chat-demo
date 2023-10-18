@@ -1,6 +1,5 @@
 package com.example.redispub.repository;
 
-import com.example.redispub.entity.RoomInfo;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,9 +14,7 @@ public interface RedisRepository {
 
     void clearRoom(Long roomId);
 
-    List<RoomInfo> findByMemberId(Long memberId);
-
-    Set<Long> findByRoomId(Long roomId);
+    Set<Long> findMemberIdListByRoomId(Long roomId);
 
     void deleteByMemberId(Long memberId);
 

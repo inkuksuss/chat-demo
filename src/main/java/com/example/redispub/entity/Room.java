@@ -3,6 +3,8 @@ package com.example.redispub.entity;
 
 import jakarta.persistence.*;
 
+
+
 @Entity
 public class Room {
 
@@ -13,6 +15,7 @@ public class Room {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CREATOR_ID", referencedColumnName = "MEMBER_ID")
     private Member creator;
+
 
     public Room() {}
 

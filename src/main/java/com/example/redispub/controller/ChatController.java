@@ -1,12 +1,13 @@
 package com.example.redispub.controller;
 
+import com.example.redispub.entity.RoomMapper;
+import com.example.redispub.service.dto.RoomDetailDto;
 import com.example.redispub.utils.AuthenticationUtils;
 import com.example.redispub.controller.request.RequestDto;
 import com.example.redispub.service.ChatService;
 import com.example.redispub.service.dto.ChatDto;
 import com.example.redispub.service.dto.MessageDto;
 import com.example.redispub.service.dto.RoomInfoDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -31,16 +32,17 @@ public class ChatController {
 
     @MessageMapping("/chat/init")
     public void init(Principal principal, RequestDto requestDto) {
-        ChatDto<List<Long>> chatDto = chatService.initRoomList(
+        ChatDto<List<RoomDetailDto>> chatDto = chatService.initRoomList(
                 principal.getName(),
                 AuthenticationUtils.getMemberId(requestDto.getToken())
         );
 
+        logger.info("contr");
         redisTemplate.convertAndSend("/init", chatDto);
     }
 
     @MessageMapping("/chat/join")
-    public void join(RequestDto requestDto) throws JsonProcessingException {
+    public void join(RequestDto requestDto) {
         ChatDto<RoomInfoDto> chatDto = chatService.joinRoom(
                 AuthenticationUtils.getMemberId(requestDto.getToken()),
                 requestDto.getRoomId()

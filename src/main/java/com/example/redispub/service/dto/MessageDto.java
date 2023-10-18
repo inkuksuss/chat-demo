@@ -24,6 +24,7 @@ public class MessageDto {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime created;
 
+
     public Long getId() {
         return id;
     }

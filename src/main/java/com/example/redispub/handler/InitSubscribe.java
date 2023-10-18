@@ -28,6 +28,7 @@ public class InitSubscribe implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
+            logger.info("subs");
             ChatDto<List<Long>> chatDto = objectMapper.readValue(message.getBody(), ChatDto.class);
 
             ResponseDto responseDto = new ResponseDto();

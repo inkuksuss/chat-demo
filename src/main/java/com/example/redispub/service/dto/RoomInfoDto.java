@@ -1,32 +1,34 @@
 package com.example.redispub.service.dto;
 
+import com.example.redispub.entity.Message;
+import org.springframework.data.domain.Slice;
+
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 public class RoomInfoDto implements Serializable {
 
-    private List<Long> totalMemberIdList;
+    private final Set<Long> totalMemberIdList;
 
-    private List<Long> currentMemberIdList;
+    private final Set<Long> currentMemberIdList;
 
-    public RoomInfoDto(List<Long> totalMemberIdList, List<Long> currentMemberIdList) {
+    private final Slice<Message> messageList;
+
+    public RoomInfoDto(Set<Long> totalMemberIdList, Set<Long> currentMemberIdList, Slice<Message> messageList) {
         this.totalMemberIdList = totalMemberIdList;
         this.currentMemberIdList = currentMemberIdList;
+        this.messageList = messageList;
     }
 
-    public void setTotalMemberIdList(List<Long> totalMemberIdList) {
-        this.totalMemberIdList = totalMemberIdList;
-    }
-
-    public void setCurrentMemberIdList(List<Long> currentMemberIdList) {
-        this.currentMemberIdList = currentMemberIdList;
-    }
-
-    public List<Long> getTotalMemberIdList() {
+    public Set<Long> getTotalMemberIdList() {
         return totalMemberIdList;
     }
 
-    public List<Long> getCurrentMemberIdList() {
+    public Set<Long> getCurrentMemberIdList() {
         return currentMemberIdList;
+    }
+
+    public Slice<Message> getMessageList() {
+        return messageList;
     }
 }

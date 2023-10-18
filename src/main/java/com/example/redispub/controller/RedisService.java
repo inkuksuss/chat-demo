@@ -1,12 +1,11 @@
 package com.example.redispub.controller;
 
-import com.example.redispub.entity.RoomInfo;
 import com.example.redispub.repository.RedisRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -18,13 +17,12 @@ public class RedisService {
         this.redisRepository = redisRepository;
     }
 
-    public void saveRoom(RoomInfo roomInfo) throws JsonProcessingException {
-//        redisRepository.deleteById(roomInfo.getRoomId().toString());
-        redisRepository.enterRoom(roomInfo.getRoomId(), roomInfo.getMemberId());
+    @Transactional
+    public void enterRoom(Long roomId, Long memberId) {
+        redisRepository.enterRoom(roomId, memberId);
     }
 
-    public List<RoomInfo> findByRoomId(Long roomId) {
-//        return redisRepository.findByRoomId(roomId);
-        return null;
+    public Set<Long> findByRoomId(Long roomId) {
+        return redisRepository.findMemberIdListByRoomId(roomId);
     }
 }

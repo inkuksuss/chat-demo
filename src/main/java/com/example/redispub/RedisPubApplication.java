@@ -1,9 +1,12 @@
 package com.example.redispub;
 
+import com.example.redispub.entity.Message;
 import com.example.redispub.entity.Room;
-import com.example.redispub.entity.RoomMapping;
+import com.example.redispub.entity.RoomMapper;
+import com.example.redispub.enums.MessageType;
 import com.example.redispub.repository.MemberRepository;
-import com.example.redispub.repository.RoomMappingRepository;
+import com.example.redispub.repository.MessageRepository;
+import com.example.redispub.repository.RoomMapperRepository;
 import com.example.redispub.repository.RoomRepository;
 import com.example.redispub.entity.Member;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +27,10 @@ public class RedisPubApplication {
 	RoomRepository roomRepository;
 
 	@Autowired
-	RoomMappingRepository roomMappingRepository;
+	RoomMapperRepository roomMapperRepository;
+
+	@Autowired
+	MessageRepository messageRepository;
 
 
 	public static void main(String[] args) {
@@ -32,7 +38,7 @@ public class RedisPubApplication {
 		SpringApplication.run(RedisPubApplication.class, args);
 	}
 
-//	@EventListener(ApplicationReadyEvent.class)
+	@EventListener(ApplicationReadyEvent.class)
 	public void init() {
 		initData();
 	}
@@ -66,29 +72,54 @@ public class RedisPubApplication {
 		roomRepository.save(room3);
 
 
-		RoomMapping roomMapping1 = new RoomMapping();
-		roomMapping1.setRoom(room1);
-		roomMapping1.setMember(member1);
-		roomMapping1.setCreated(LocalDateTime.now());
+		RoomMapper roomMapper1 = new RoomMapper();
+		roomMapper1.setRoom(room1);
+		roomMapper1.setMember(member1);
+		roomMapper1.setCreated(LocalDateTime.now());
 
-		RoomMapping roomMapping2 = new RoomMapping();
-		roomMapping2.setRoom(room1);
-		roomMapping2.setMember(member2);
-		roomMapping2.setCreated(LocalDateTime.now());
+		RoomMapper roomMapper2 = new RoomMapper();
+		roomMapper2.setRoom(room1);
+		roomMapper2.setMember(member2);
+		roomMapper2.setCreated(LocalDateTime.now());
 
-		RoomMapping roomMapping3 = new RoomMapping();
-		roomMapping3.setRoom(room2);
-		roomMapping3.setMember(member1);
-		roomMapping3.setCreated(LocalDateTime.now());
+		RoomMapper roomMapper3 = new RoomMapper();
+		roomMapper3.setRoom(room2);
+		roomMapper3.setMember(member1);
+		roomMapper3.setCreated(LocalDateTime.now());
 
-		RoomMapping roomMapping4 = new RoomMapping();
-		roomMapping4.setRoom(room3);
-		roomMapping4.setMember(member3);
-		roomMapping4.setCreated(LocalDateTime.now());
+		RoomMapper roomMapper4 = new RoomMapper();
+		roomMapper4.setRoom(room3);
+		roomMapper4.setMember(member3);
+		roomMapper4.setCreated(LocalDateTime.now());
 
-		roomMappingRepository.save(roomMapping1);
-		roomMappingRepository.save(roomMapping2);
-		roomMappingRepository.save(roomMapping3);
-		roomMappingRepository.save(roomMapping4);
+		roomMapperRepository.save(roomMapper1);
+		roomMapperRepository.save(roomMapper2);
+		roomMapperRepository.save(roomMapper3);
+		roomMapperRepository.save(roomMapper4);
+
+
+		for (int i = 0; i < 1000; i++) {
+			Member member;
+			Room room;
+			if (i % 3 == 0) {
+				member = member1;
+				room = room1;
+			} else if (i % 3 == 1) {
+				member = member2;
+				room = room3;
+			} else {
+				member = member3;
+				room = room3;
+			}
+
+			Message message = new Message();
+			message.setMember(member);
+			message.setBody(String.valueOf(i));
+			message.setRoom(room);
+			message.setType(MessageType.TEXT);
+			message.setCreated(LocalDateTime.now());
+			messageRepository.save(message);
+		}
+
 	}
 }

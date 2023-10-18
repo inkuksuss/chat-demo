@@ -9,11 +9,11 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class RoomMapping {
+public class RoomMapper {
 
 
     @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "ROOM_MAPPING_ID")
+    @Column(name = "ROOM_MAPPER_ID")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,7 +28,7 @@ public class RoomMapping {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime created;
 
-    public RoomMapping() {}
+    public RoomMapper() {}
 
     public Long getId() {
         return id;

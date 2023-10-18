@@ -83,15 +83,15 @@ public class Message implements Serializable {
         this.created = created;
     }
 
-    public MessageDto toEntity() {
-        MessageDto messageDto = new MessageDto();
-        messageDto.setId(this.id);
-        messageDto.setMemberId(this.member.getId());
-        messageDto.setRoomId(this.room.getId());
-        messageDto.setMessageType(this.type);
-        messageDto.setBody(this.body);
-        messageDto.setCreated(this.created);
-
-        return messageDto;
-    }
+//    public MessageDto toEntity() {
+//        MessageDto messageDto = new MessageDto();
+//        messageDto.setId(this.id);
+//        messageDto.setMemberId(this.member.getId());
+//        messageDto.setRoomId(this.room.getId());
+//        messageDto.setMessageType(this.type);
+//        messageDto.setBody(this.body);
+//        messageDto.setCreated(this.created);
+//
+//        return messageDto;
+//    }
 }

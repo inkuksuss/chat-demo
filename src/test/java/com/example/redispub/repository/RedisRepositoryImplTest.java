@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -46,7 +45,7 @@ class RedisRepositoryImplTest {
         countDownLatch.await();
 
         //then
-        Set<Long> roomData = redisRepository.findByRoomId(TEST_ROOM_KEY);
+        Set<Long> roomData = redisRepository.findMemberIdListByRoomId(TEST_ROOM_KEY);
         Assertions.assertThat(roomData.size()).isEqualTo(count);
     }
 
@@ -70,7 +69,7 @@ class RedisRepositoryImplTest {
         countDownLatch.await();
 
         //then
-        Set<Long> roomData = redisRepository.findByRoomId(TEST_ROOM_KEY);
+        Set<Long> roomData = redisRepository.findMemberIdListByRoomId(TEST_ROOM_KEY);
         Assertions.assertThat(roomData.size()).isEqualTo(count / 2 + 1);
     }
 
