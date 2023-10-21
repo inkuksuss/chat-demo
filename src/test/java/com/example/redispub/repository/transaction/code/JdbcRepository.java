@@ -39,7 +39,6 @@ public class JdbcRepository {
         map.put("id", id);
         map.put("name", name);
         jdbcTemplate.update(sql, map);
-
     }
 
     private RowMapper<Member> memberRowMapper() {

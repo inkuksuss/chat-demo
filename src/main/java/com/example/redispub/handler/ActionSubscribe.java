@@ -3,6 +3,7 @@ package com.example.redispub.handler;
 import com.example.redispub.enums.ActionType;
 import com.example.redispub.controller.response.ResponseDto;
 import com.example.redispub.service.dto.ChatDto;
+import com.example.redispub.service.dto.RoomDetailDto;
 import com.example.redispub.service.dto.RoomInfoDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -28,7 +29,7 @@ public class ActionSubscribe implements MessageListener {
     @Override
     public void onMessage(Message message, byte[] pattern) {
         try {
-            ChatDto<RoomInfoDto> chatDto = objectMapper.readValue(message.getBody(), ChatDto.class);
+            ChatDto<RoomDetailDto> chatDto = objectMapper.readValue(message.getBody(), ChatDto.class);
             ActionType actionType = chatDto.getActionType();
 
             ResponseDto responseDto = new ResponseDto();
@@ -39,11 +40,8 @@ public class ActionSubscribe implements MessageListener {
 
             switch (actionType) {
                 case ROOM_JOIN:
-
-
                     break;
                 case ROOM_QUIT:
-
                     break;
                 default:
                     break;

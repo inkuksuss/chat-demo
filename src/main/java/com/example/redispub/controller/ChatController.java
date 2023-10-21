@@ -37,13 +37,12 @@ public class ChatController {
                 AuthenticationUtils.getMemberId(requestDto.getToken())
         );
 
-        logger.info("contr");
         redisTemplate.convertAndSend("/init", chatDto);
     }
 
     @MessageMapping("/chat/join")
     public void join(RequestDto requestDto) {
-        ChatDto<RoomInfoDto> chatDto = chatService.joinRoom(
+        ChatDto<RoomDetailDto> chatDto = chatService.joinRoom(
                 AuthenticationUtils.getMemberId(requestDto.getToken()),
                 requestDto.getRoomId()
         );

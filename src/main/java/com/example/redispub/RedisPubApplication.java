@@ -43,60 +43,48 @@ public class RedisPubApplication {
 		initData();
 	}
 
+	private Member createUserWithName(String name) {
+		Member member = new Member();
+		member.setName(name);
+
+		memberRepository.save(member);
+
+		return member;
+	}
+
+	private Room createRoomWithMember(Member member) {
+		Room room = new Room();
+		room.setCreator(member);
+
+		roomRepository.save(room);
+		return room;
+	}
+
+	private RoomMapper createRoomMapperWithMemberAndRoom(Member member, Room room) {
+		RoomMapper roomMapper = new RoomMapper();
+		roomMapper.setRoom(room);
+		roomMapper.setMember(member);
+		roomMapper.setCreated(LocalDateTime.now());
+
+		roomMapperRepository.save(roomMapper);
+
+		return roomMapper;
+	}
+
 
 	private void initData() {
-		Member member1 = new Member();
-		member1.setName("user1");
+		Member member1 = createUserWithName("user1");
+		Member member2 = createUserWithName("user2");
+		Member member3 = createUserWithName("user3");
 
-		Member member2 = new Member();
-		member2.setName("user2");
+		Room room1 = this.createRoomWithMember(member1);
+		Room room2 = this.createRoomWithMember(member2);
+		Room room3 = this.createRoomWithMember(member3);
 
-		Member member3 = new Member();
-		member3.setName("user3");
-
-		memberRepository.save(member1);
-		memberRepository.save(member2);
-		memberRepository.save(member3);
-
-		Room room1 = new Room();
-		room1.setCreator(member1);
-
-		Room room2 = new Room();
-		room2.setCreator(member1);
-
-		Room room3 = new Room();
-		room3.setCreator(member2);
-
-		roomRepository.save(room1);
-		roomRepository.save(room2);
-		roomRepository.save(room3);
-
-
-		RoomMapper roomMapper1 = new RoomMapper();
-		roomMapper1.setRoom(room1);
-		roomMapper1.setMember(member1);
-		roomMapper1.setCreated(LocalDateTime.now());
-
-		RoomMapper roomMapper2 = new RoomMapper();
-		roomMapper2.setRoom(room1);
-		roomMapper2.setMember(member2);
-		roomMapper2.setCreated(LocalDateTime.now());
-
-		RoomMapper roomMapper3 = new RoomMapper();
-		roomMapper3.setRoom(room2);
-		roomMapper3.setMember(member1);
-		roomMapper3.setCreated(LocalDateTime.now());
-
-		RoomMapper roomMapper4 = new RoomMapper();
-		roomMapper4.setRoom(room3);
-		roomMapper4.setMember(member3);
-		roomMapper4.setCreated(LocalDateTime.now());
-
-		roomMapperRepository.save(roomMapper1);
-		roomMapperRepository.save(roomMapper2);
-		roomMapperRepository.save(roomMapper3);
-		roomMapperRepository.save(roomMapper4);
-
+		this.createRoomMapperWithMemberAndRoom(member1, room1);
+		this.createRoomMapperWithMemberAndRoom(member2, room1);
+		this.createRoomMapperWithMemberAndRoom(member1, room2);
+		this.createRoomMapperWithMemberAndRoom(member3, room3);
 
 		for (int i = 0; i < 1000; i++) {
 			Member member;

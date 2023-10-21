@@ -5,9 +5,11 @@ import com.example.redispub.repository.MessageRepository;
 import com.example.redispub.repository.RoomMapperRepository;
 import com.example.redispub.repository.RoomRepository;
 import com.example.redispub.repository.dto.MessageSummaryDto;
+import com.example.redispub.service.dto.MemberDetailDto;
 import com.example.redispub.service.dto.RoomDetailDto;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,11 +25,43 @@ public class RoomService {
         this.messageRepository = messageRepository;
     }
 
-    public List<RoomDetailDto> findRoomDetailList(List<Long> ids) {
-        List<RoomMapper> roomMapperList = roomMapperRepository.findMemberDetailByRoomIdList(ids);
-        List<MessageSummaryDto> byDto = roomRepository.findByDto(ids);
+    public List<RoomDetailDto> getRoomSummaryDtoList(Long memberId) {
 
+        List<RoomMapper> roomMapperList = roomRepository.findRoomAllMemberByMemberId(memberId);
+        List<MessageSummaryDto> messageSummaryDtoList = this.getEachRoomRecentMessage(
+                roomMapperList.stream()
+                        .map(roomMapper -> roomMapper.getRoom().getId())
+                        .distinct()
+                        .toList()
+        );
+        return this.createRoomSummaryDtoList(roomMapperList, messageSummaryDtoList);
+    }
 
-        return List.of();
+    // TODO :: 20000
+    private List<RoomDetailDto> createRoomSummaryDtoList(List<RoomMapper> roomMapperList, List<MessageSummaryDto> messageSummaryDtoList) {
+        List<Long> roomIdList =
+                roomMapperList.stream().map(roomMapper -> roomMapper.getRoom().getId()).distinct().toList();
+
+        List<RoomDetailDto> roomDetailDtoList = new ArrayList<>();
+        for (Long roomId : roomIdList) {
+            RoomDetailDto roomDetailDto = new RoomDetailDto(roomId);
+            roomMapperList.stream()
+                    .filter(rm -> rm.getRoom().getId().equals(roomId))
+                    .forEach(rm -> roomDetailDto.getMemberList().add(new MemberDetailDto(rm.getMember())));
+            messageSummaryDtoList.stream()
+                    .filter(msg -> msg.getRoomId().equals(roomId))
+                    .forEach(msg -> roomDetailDto.getMessageList().add(msg));
+            roomDetailDtoList.add(roomDetailDto);
+        }
+
+        return roomDetailDtoList;
+    }
+
+    public List<MessageSummaryDto> getEachRoomRecentMessage(List<Long> roomIds) {
+        return messageRepository.findEachRoomRecentMessage(roomIds);
+    }
+
+    public Boolean checkAuthentication(Long roomId, Long memberId) {
+        return roomRepository.findRoomByMemberId(roomId, memberId).isPresent();
     }
 }

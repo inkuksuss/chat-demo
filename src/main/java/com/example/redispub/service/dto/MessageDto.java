@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 public class MessageDto {
 
-    private Long id;
+    private Long messageId;
 
     private Long memberId;
 
@@ -25,12 +25,12 @@ public class MessageDto {
     private LocalDateTime created;
 
 
-    public Long getId() {
-        return id;
+    public Long getMessageId() {
+        return messageId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setMessageId(Long messageId) {
+        this.messageId = messageId;
     }
 
     public Long getMemberId() {

@@ -5,3 +5,6 @@
 
 
 ERD: https://www.erdcloud.com/d/wJpLvAindpuFFi2WY
+
+
+-> redis room membercount cache

@@ -6,12 +6,9 @@ import com.example.redispub.entity.RoomMapper;
 import com.example.redispub.enums.ActionType;
 import com.example.redispub.repository.*;
 import com.example.redispub.entity.Room;
-import com.example.redispub.service.dto.ChatDto;
+import com.example.redispub.repository.dto.MessageSummaryDto;
+import com.example.redispub.service.dto.*;
 import com.example.redispub.entity.Message;
-import com.example.redispub.service.dto.MessageDto;
-import com.example.redispub.service.dto.RoomInfoDto;
-import com.example.redispub.service.dto.RoomDetailDto;
-import org.hibernate.proxy.HibernateProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
@@ -46,46 +43,43 @@ public class ChatService {
     }
 
     public ChatDto<List<RoomDetailDto>> initRoomList(String name, Long memberId) {
-        List<RoomMapper> roomMapperList = roomMapperRepository.findRoomDetailByMemberId(memberId);
-
-        List<Long> roomIdList = roomMapperList.stream()
-                .map(RoomMapper::getRoom)
-                .map(Room::getId)
-                .distinct()
-                .toList();
-
-        List<RoomMapper> memberMapperList = roomMapperRepository.findMemberDetailByRoomIdList(roomIdList);
-        List<RoomDetailDto> roomDetailList = this.createRoomDetailList(roomMapperList, memberMapperList);
-        List<RoomDetailDto> roomDetailList1 = roomService.findRoomDetailList(roomIdList);
+        List<RoomDetailDto> roomSummaryDtoList = roomService.getRoomSummaryDtoList(memberId);
 
         ChatDto<List<RoomDetailDto>> chatDto = new ChatDto<>();
         chatDto.setMemberId(memberId);
         chatDto.setPrincipalName(name);
-        chatDto.setData(roomDetailList);
+        chatDto.setData(roomSummaryDtoList);
 
         return chatDto;
     }
 
-    @Transactional
-    public ChatDto<RoomInfoDto> joinRoom(Long memberId, Long roomId) {
+    public ChatDto<RoomDetailDto> joinRoom(Long memberId, Long roomId) {
         Assert.notNull(memberId, "member id can not be null");
         Assert.notNull(roomId, "room id can not be null");
 
-        List<RoomMapper> findMemberList = roomMapperRepository.findRoomMapperDetailByRoomId(roomId);
-        List<Long> memberIdList = findMemberList.stream()
-                .map(RoomMapper::getMember)
-                .map(Member::getId)
-                .toList();
+        if (!roomService.checkAuthentication(roomId, memberId)) throw new IllegalStateException("참가할 수 없는 방입니다.");
 
-        if (!checkAuthentication(memberIdList, memberId)) throw new IllegalStateException("참가할 수 없는 방입니다.");
+        List<RoomMapper> memberDetailOfRoom = roomRepository.findMemberDetailOfRoom(roomId);
+
+        RoomDetailDto roomDetailDto = new RoomDetailDto(roomId);
+        memberDetailOfRoom.forEach(roomMapper -> roomDetailDto.getMemberList().add(new MemberDetailDto(roomMapper.getMember())));
+
+        // 메세지 가져오는 쿼리
+        Slice<Message> messageList =
+                messageRepository.findMessageByRoomId(roomId, PageRequest.of(0, 20, Sort.by(Sort.Order.desc("created"))));
+
+        roomDetailDto.setHasNext(messageList.hasNext());
+        roomDetailDto.getMessageList().addAll(messageList.getContent().stream()
+                .map(MessageSummaryDto::new)
+                .toList());
 
         redisService.enterRoom(roomId, memberId);
 
-        ChatDto<RoomInfoDto> chatDto = new ChatDto<>();
+        ChatDto<RoomDetailDto> chatDto = new ChatDto<>();
         chatDto.setMemberId(memberId);
         chatDto.setRoomId(roomId);
         chatDto.setActionType(ActionType.ROOM_JOIN);
-        chatDto.setData(this.getRoomParticipationInformation(roomId, memberIdList));
+        chatDto.setData(roomDetailDto);
 
         return chatDto;
     }
@@ -94,13 +88,12 @@ public class ChatService {
         return idList.contains(id);
     }
 
-    private RoomInfoDto getRoomParticipationInformation(Long roomId, List<Long> memberIdList) {
-        Set<Long> currentMemberIdList = redisService.findByRoomId(roomId);
-        Slice<Message> messageList =
-                messageRepository.findMessageByRoomId(roomId, PageRequest.of(0, 20, Sort.by(Sort.Order.desc("created"))));
+//    private RoomInfoDto getRoomParticipationInformation(Long roomId, List<Long> memberIdList) {
+//        Set<Long> currentMemberIdList = redisService.findByRoomId(roomId);
 
-        return new RoomInfoDto(Set.copyOf(memberIdList), currentMemberIdList, messageList);
-    }
+
+//        return new RoomInfoDto(Set.copyOf(memberIdList), currentMemberIdList, messageList);
+//    }
 
     @Transactional
     public ChatDto<MessageDto> sendMessage(MessageDto messageDto) {
@@ -135,19 +128,5 @@ public class ChatService {
         message.setCreated(LocalDateTime.now());
 
         return message;
-    }
-
-    private List<RoomDetailDto> createRoomDetailList(List<RoomMapper> roomMapperList, List<RoomMapper> memberMapperList) {
-        List<RoomDetailDto> dtoList = new ArrayList<>();
-        for (RoomMapper roomMapper : roomMapperList) {
-            RoomDetailDto roomDetailDto = new RoomDetailDto();
-            roomDetailDto.setRoomId(roomMapper.getRoom().getId());
-            roomDetailDto.getMemberList().addAll(memberMapperList.stream()
-                    .filter(rm -> roomMapper.getRoom().getId().equals(rm.getRoom().getId()))
-                    .map(RoomMapper::getMember).toList());
-            dtoList.add(roomDetailDto);
-        }
-
-        return dtoList;
     }
 }
