@@ -1,9 +1,11 @@
 package com.example.redispub.handler;
 
+import com.example.redispub.controller.RedisService;
 import com.example.redispub.controller.request.RequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -17,11 +19,20 @@ public class StompAuthenticationInterceptor implements ChannelInterceptor {
 
     private final Logger logger = LoggerFactory.getLogger(StompAuthenticationInterceptor.class);
 
+    @Autowired
+    RedisService redisService;
+
+
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         logger.info("command = {}", accessor.getCommand());
-        if (accessor.getCommand() == StompCommand.CONNECT || accessor.getCommand() == StompCommand.DISCONNECT || accessor.getCommand() == StompCommand.SUBSCRIBE || accessor.getCommand() == StompCommand.SEND) {
+        if (accessor.getCommand() == StompCommand.CONNECT || accessor.getCommand() == StompCommand.SUBSCRIBE || accessor.getCommand() == StompCommand.SEND) {
+            return message;
+        }
+
+        if (accessor.getCommand() == StompCommand.DISCONNECT) {
+
             return message;
         }
 

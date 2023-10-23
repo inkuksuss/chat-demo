@@ -1,10 +1,8 @@
 package com.example.redispub.handler;
 
-import com.example.redispub.enums.ActionType;
 import com.example.redispub.controller.response.ResponseDto;
 import com.example.redispub.service.dto.ChatDto;
 import com.example.redispub.service.dto.RoomDetailDto;
-import com.example.redispub.service.dto.RoomInfoDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,22 +28,23 @@ public class ActionSubscribe implements MessageListener {
     public void onMessage(Message message, byte[] pattern) {
         try {
             ChatDto<RoomDetailDto> chatDto = objectMapper.readValue(message.getBody(), ChatDto.class);
-            ActionType actionType = chatDto.getActionType();
 
-            ResponseDto responseDto = new ResponseDto();
-            responseDto.setMemberId(chatDto.getMemberId());
-            responseDto.setRoomId(chatDto.getRoomId());
-            responseDto.setActionType(actionType);
-            responseDto.setData(chatDto.getData());
-
-            switch (actionType) {
+            switch (chatDto.getActionType()) {
                 case ROOM_JOIN:
                     break;
                 case ROOM_QUIT:
                     break;
+                case MESSAGE:
+                    break;
                 default:
                     break;
             }
+
+            ResponseDto responseDto = new ResponseDto();
+            responseDto.setMemberId(chatDto.getMemberId());
+            responseDto.setRoomId(chatDto.getRoomId());
+            responseDto.setActionType(chatDto.getActionType());
+            responseDto.setData(chatDto.getData());
 
             simpMessagingTemplate.convertAndSend("/topic/room/" + chatDto.getRoomId(), responseDto);
         } catch (IOException e) {

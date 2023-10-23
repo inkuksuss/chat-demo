@@ -1,13 +1,12 @@
 package com.example.redispub.repository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.List;
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,9 +46,13 @@ public class RedisRepositoryImpl implements RedisRepository {
 
     @Override
     public Set<Long> findMemberIdListByRoomId(Long roomId) {
-        return redisTemplate.opsForSet().members(this.createRoomKey(roomId)).stream()
-                .map(value -> Long.valueOf(value.toString()))
-                .collect(Collectors.toSet());
+        Set<Object> members = redisTemplate.opsForSet().members(this.createRoomKey(roomId));
+        if (members != null) {
+            return members.stream()
+                    .map(value -> Long.valueOf(value.toString()))
+                    .collect(Collectors.toSet());
+        }
+        return Collections.emptySet();
     }
 
     @Override

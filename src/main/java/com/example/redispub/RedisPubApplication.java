@@ -83,7 +83,9 @@ public class RedisPubApplication {
 
 		this.createRoomMapperWithMemberAndRoom(member1, room1);
 		this.createRoomMapperWithMemberAndRoom(member2, room1);
+		this.createRoomMapperWithMemberAndRoom(member3, room1);
 		this.createRoomMapperWithMemberAndRoom(member1, room2);
+		this.createRoomMapperWithMemberAndRoom(member2, room2);
 		this.createRoomMapperWithMemberAndRoom(member3, room3);
 
 		for (int i = 0; i < 1000; i++) {

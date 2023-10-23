@@ -4,11 +4,14 @@ import com.example.redispub.entity.RoomMapper;
 import com.example.redispub.repository.MessageRepository;
 import com.example.redispub.repository.RoomMapperRepository;
 import com.example.redispub.repository.RoomRepository;
+import com.example.redispub.repository.dto.MemberAccessDto;
 import com.example.redispub.repository.dto.MessageSummaryDto;
 import com.example.redispub.service.dto.MemberDetailDto;
 import com.example.redispub.service.dto.RoomDetailDto;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +50,7 @@ public class RoomService {
             RoomDetailDto roomDetailDto = new RoomDetailDto(roomId);
             roomMapperList.stream()
                     .filter(rm -> rm.getRoom().getId().equals(roomId))
-                    .forEach(rm -> roomDetailDto.getMemberList().add(new MemberDetailDto(rm.getMember())));
+                    .forEach(rm -> roomDetailDto.getMemberList().add(new MemberDetailDto(rm)));
             messageSummaryDtoList.stream()
                     .filter(msg -> msg.getRoomId().equals(roomId))
                     .forEach(msg -> roomDetailDto.getMessageList().add(msg));
@@ -61,7 +64,16 @@ public class RoomService {
         return messageRepository.findEachRoomRecentMessage(roomIds);
     }
 
-    public Boolean checkAuthentication(Long roomId, Long memberId) {
-        return roomRepository.findRoomByMemberId(roomId, memberId).isPresent();
+    @Transactional
+    public Integer updateLastAccessByMemberIdList(LocalDateTime lastAccessDate, Long roomId, List<Long> memberIdList) {
+        return roomRepository.updateLastAccessByMemberIdList(lastAccessDate, roomId, memberIdList);
+    }
+
+    public List<MemberAccessDto> findMemberAccessDtoList(Long roomId) {
+        return roomRepository.findMemberAccessDtoList(roomId);
+    }
+
+    public void checkAuthentication(Long roomId, Long memberId) {
+        roomRepository.findRoomByMemberId(roomId, memberId).orElseThrow(IllegalAccessError::new);
     }
 }

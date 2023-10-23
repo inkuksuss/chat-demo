@@ -1,8 +1,11 @@
 package com.example.redispub.config;
 
+import com.example.redispub.controller.RedisService;
 import com.example.redispub.handler.SocketAuthenticationInterceptor;
 import com.example.redispub.handler.StompAuthenticationInterceptor;
 import com.example.redispub.handler.StompHandshakeHandler;
+import com.example.redispub.service.ChatService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -17,9 +20,11 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
+//    @Autowired
+//    ChatService chatService;
+
     @Bean
-    ChannelInterceptor stompAuthenticationInterceptor() {
-        return new StompAuthenticationInterceptor(); }
+    ChannelInterceptor stompAuthenticationInterceptor() { return new StompAuthenticationInterceptor(); }
 
     @Bean
     HandshakeInterceptor socketAuthenticationInterceptor() {

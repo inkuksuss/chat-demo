@@ -2,7 +2,6 @@ package com.example.redispub.repository.dto;
 
 import com.example.redispub.entity.Message;
 import com.example.redispub.enums.MessageType;
-import com.example.redispub.service.dto.MessageDto;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;

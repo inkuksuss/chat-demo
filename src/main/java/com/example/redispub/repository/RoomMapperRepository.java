@@ -10,7 +10,9 @@ import java.util.*;
 @Repository
 public interface RoomMapperRepository extends CrudRepository<RoomMapper, Long> {
 
-    Optional<RoomMapper> findByMemberIdAndRoomId(Long memberId, Long roomId);
+    List<RoomMapper> findRommMapperListByRoomId(Long roomId);
+
+//    Optional<RoomMapper> findByMemberIdAndRoomId(Long memberId, Long roomId);
 
 //    @Query("SELECT r FROM RoomMapper r JOIN FETCH r.member JOIN FETCH r.room WHERE r.room.id = :roomId")
 //    List<RoomMapper> findRoomMapperDetailByRoomId(Long roomId);

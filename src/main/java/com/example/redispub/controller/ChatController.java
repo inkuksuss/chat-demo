@@ -1,13 +1,11 @@
 package com.example.redispub.controller;
 
-import com.example.redispub.entity.RoomMapper;
 import com.example.redispub.service.dto.RoomDetailDto;
 import com.example.redispub.utils.AuthenticationUtils;
 import com.example.redispub.controller.request.RequestDto;
 import com.example.redispub.service.ChatService;
 import com.example.redispub.service.dto.ChatDto;
 import com.example.redispub.service.dto.MessageDto;
-import com.example.redispub.service.dto.RoomInfoDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -58,8 +56,8 @@ public class ChatController {
         messageDto.setBody(requestDto.getData());
         messageDto.setMessageType(requestDto.getMessageType());
 
-        ChatDto<MessageDto> chatDto = chatService.sendMessage(messageDto);
+        ChatDto<RoomDetailDto> chatDto = chatService.sendMessage(messageDto);
 
-        redisTemplate.convertAndSend("/message", chatDto);
+        redisTemplate.convertAndSend("/actions", chatDto);
     }
 }
