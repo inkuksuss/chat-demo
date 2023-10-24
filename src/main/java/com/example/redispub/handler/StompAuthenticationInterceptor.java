@@ -1,37 +1,45 @@
 package com.example.redispub.handler;
 
-import com.example.redispub.controller.RedisService;
 import com.example.redispub.controller.request.RequestDto;
+import com.example.redispub.service.ChatService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-
+@Component
 public class StompAuthenticationInterceptor implements ChannelInterceptor {
 
+
     private final Logger logger = LoggerFactory.getLogger(StompAuthenticationInterceptor.class);
+    private final ChatService service;
 
-    @Autowired
-    RedisService redisService;
-
+    public StompAuthenticationInterceptor(@Lazy ChatService service) {
+        this.service = service;
+    }
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+
         logger.info("command = {}", accessor.getCommand());
         if (accessor.getCommand() == StompCommand.CONNECT || accessor.getCommand() == StompCommand.SUBSCRIBE || accessor.getCommand() == StompCommand.SEND) {
             return message;
         }
 
         if (accessor.getCommand() == StompCommand.DISCONNECT) {
+            if (accessor.getSessionAttributes() != null) {
+                String memberId = (String) accessor.getSessionAttributes().get("memberId");
+                service.closeConnection(Long.parseLong(memberId));
+            }
 
             return message;
         }

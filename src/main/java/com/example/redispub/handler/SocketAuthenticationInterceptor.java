@@ -6,14 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
-import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
 
+@Component
 public class SocketAuthenticationInterceptor implements HandshakeInterceptor {
 
     private final static Logger logger = LoggerFactory.getLogger(SocketAuthenticationInterceptor.class);
@@ -27,17 +27,14 @@ public class SocketAuthenticationInterceptor implements HandshakeInterceptor {
         }
 
         try {
-            String[] queryParams = query.split("&");
-            Optional<String> findAccessToken = Arrays.stream(queryParams)
-                    .filter(q -> q.startsWith(AUTHENTICATION_TOKEN + "="))
-                    .map(q -> q.substring(q.lastIndexOf(AUTHENTICATION_TOKEN + "=")))
-                    .findAny();
-            String accessToken = findAccessToken.orElseThrow(() -> new AuthenticationException("인증 토큰이 존재하지 않습니다"));
+            String[] auth = query.split("&");
+            String accessToken = auth[0].replace(AUTHENTICATION_TOKEN + "=", "");
+            if (AuthenticationUtils.valid(accessToken)) {
+                attributes.put("memberId", AuthenticationUtils.getMemberId(accessToken).toString());
+                return true;
+            }
 
-            return AuthenticationUtils.valid(accessToken);
-        }
-        catch (AuthenticationException e) {
-            throw e;
+            return false;
         }
         catch (Exception e) {
             throw new AuthenticationException("잘못된 쿼리 파라미터 정보입니다");

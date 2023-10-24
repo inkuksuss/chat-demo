@@ -116,8 +116,8 @@ public class ChatService {
     }
 
     @Transactional
-    public void closeConnection() {
-
+    public void closeConnection(Long memberId) {
+        redisService.releaseConnection(memberId);
     }
 
     private Message createMessage(MessageDto messageDto) {

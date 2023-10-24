@@ -8,6 +8,7 @@ import com.example.redispub.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.support.ChannelInterceptor;
@@ -20,16 +21,11 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-//    @Autowired
-//    ChatService chatService;
+    @Autowired
+    ChannelInterceptor stompAuthenticationInterceptor;
 
-    @Bean
-    ChannelInterceptor stompAuthenticationInterceptor() { return new StompAuthenticationInterceptor(); }
-
-    @Bean
-    HandshakeInterceptor socketAuthenticationInterceptor() {
-        return new SocketAuthenticationInterceptor();
-    }
+    @Autowired
+    HandshakeInterceptor socketAuthenticationInterceptor;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -44,7 +40,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/chat-server")
-                .addInterceptors(socketAuthenticationInterceptor())
+                .addInterceptors(socketAuthenticationInterceptor)
                 .setHandshakeHandler(new StompHandshakeHandler())
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
@@ -52,6 +48,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(stompAuthenticationInterceptor());
+        registration.interceptors(stompAuthenticationInterceptor);
     }
 }

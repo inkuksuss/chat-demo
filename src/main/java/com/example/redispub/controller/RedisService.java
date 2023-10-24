@@ -4,7 +4,7 @@ import com.example.redispub.repository.RedisRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -20,9 +20,18 @@ public class RedisService {
     @Transactional
     public void enterRoom(Long roomId, Long memberId) {
         redisRepository.enterRoom(roomId, memberId);
+        redisRepository.changeCurrentRoom(roomId, memberId);
     }
 
     public Set<Long> findByRoomId(Long roomId) {
         return redisRepository.findMemberIdListByRoomId(roomId);
+    }
+
+    public void releaseConnection(Long memberId) {
+        Optional<Long> currentRoom = redisRepository.getCurrentRoom(memberId);
+        currentRoom.ifPresent(roomId -> {
+            redisRepository.leaveRoom(roomId, memberId);
+            redisRepository.removeCurrentRoom(memberId);
+        });
     }
 }
